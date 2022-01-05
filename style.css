@@ -1,0 +1,15 @@
+path {
+    fill: none;
+    stroke: rgb(15, 43, 202);
+    
+}
+
+line {
+    stroke:black;
+    
+}
+
+circle {
+    stroke-width: 1;
+    stroke: rgb(255, 255, 255);
+}

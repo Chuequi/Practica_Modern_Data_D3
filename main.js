@@ -34,19 +34,20 @@ const grupoY = grupoEjes.append("g").attr("id", "grupoY")
     .attr("transform", `translate(${margen.izquierdo},${margen.superior})`)
 
 const ejeX = d3.axisBottom().scale(x)
-const ejeY = d3.axisLeft().scale(y)//.tickSize(-(ancho - margen.izquierdo - margen.derecho)) // este es para generar ejes verticales
+const ejeY = d3.axisLeft().scale(y) // este es para generar ejes verticales
 
 // var tooltip = grupoElementos.append("g").attr("id", "tooltip")
-var tooltip2 = grupoElementos
-  .append("g").attr("id", "tooltip")
+var tooltip2 = d3.select("#chart")
+    .append("div")
+    .attr("id", "tooltip")
     .style("position", "absolute")
     .style("visibility", "hidden")
-    .style("background-color", "blue")
+    .style("background-color", "white")
     .style("border", "solid")
     .style("border-width", "2px")
     .style("border-radius", "5px")
-    .style("padding", "1px")
-    .text("asdasdasd");
+    .style("padding", "10px")
+    .text("TOOLTIP");
 
 var recta = grupoElementos.append("g").attr("id", "edadDicaprio")
 var circulos = grupoElementos.append("g").attr("class", "circulos")
@@ -84,14 +85,14 @@ d3.csv("data.csv").then(data => {
             
     recta.datum(data).append('path')
             .attr("d", d3.line()
-                .x(d => x(d.year))
+                .x(d => x(d.year)+x.bandwidth()/2)
                 .y(d =>y(age(d.year)))
             )
             
     circulos.selectAll("circle")
     .data(data)
     .join("circle")    
-        .attr("cx", d => x(d.year))
+        .attr("cx", d => x(d.year)+x.bandwidth()/2)
         .attr("cy", d => y(age(d.year)))
         .attr("r", 5)
         .attr("fill", 'blue')
@@ -103,10 +104,12 @@ d3.csv("data.csv").then(data => {
             .attr("fill-opacity", 1)
             return tooltip2.style("visibility", "visible")
         })
-        .on("mousemove", function(){
+        .on("mousemove", function(d){
             return tooltip2
                 .style("top", (d3.event.pageY+10)+"px")
-                .style("left",(d3.event.pageX+10)+"px")})
+                .style("left",(d3.event.pageX+10)+"px")
+                .text(d.name + "- Edad: " + d.age + "- dif con Leo: " + (age(d.year)-d.age))
+            })
 
         .on("mouseout", function() {
             d3.select(this)
